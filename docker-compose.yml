@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  db:
+    image: linuxserver/mariadb:latest
+    container_name: mariadb_leantime
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=321.qwerty
+      - MYSQL_DATABASE=leantimedb
+      - MYSQL_USER=leantimeuser
+      - MYSQL_PASSWORD=leantimepass
+    ports:
+      - 3306:3306
+
+  web:
+    image: fabiodcorreia/leantime:latest
+    container_name: leantime
+    environment:
+      - TZ=Europe/Lisbon
+      - PUID=1000
+      - PGID=1000
+      - LEAN_DB_HOST=mariadb_leantime
+      - LEAN_DB_DATABASE=leantimedb
+      - LEAN_DB_USER=leantimeuser
+      - LEAN_DB_PASSWORD=leantimepass
+    volumes:
+      - leantime_config:/config
+    ports:
+      - 80:80
+    depends_on:
+      - db
+
+volumes:
+  leantime_config: {}
+  db_data: {}
