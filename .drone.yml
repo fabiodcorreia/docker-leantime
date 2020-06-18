@@ -1,5 +1,105 @@
 kind: pipeline
 type: docker
+name: build-test-build
+
+platform:
+  os: linux
+  arch: amd64
+
+trigger:
+  event:
+  - push
+
+steps:
+  - name: build test image
+    image: plugins/docker:linux-amd64
+    settings:
+      username:
+        from_secret: DOCKERHUB_USERNAME
+      password:
+        from_secret: DOCKERHUB_PASSWORD
+      repo: fabiodcorreia/leantime
+      auto_tag: true
+      auto_tag_suffix: test
+      purge: true
+
+---
+kind: pipeline
+type: docker
+name: docker-test
+
+platform:
+  os: linux
+  arch: amd64
+
+trigger:
+  status:
+  - success
+
+services:
+  - name: mariadb_leantime
+    image: linuxserver/mariadb:latest
+    container_name: mariadb_leantime
+    ports: [ 3306 ]
+    volumes:
+      - name: volume_db
+        path: /var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "321.qwerty"
+      MYSQL_DATABASE: "leantimedb"
+      MYSQL_USER: "leantimeuser"
+      MYSQL_PASSWORD: "leantimepass"
+
+  #- name: leantime_test
+  #  image: fabiodcorreia/leantime:test
+  #  ports: [ 80 ]
+  #  volumes:
+  #    - name: volume_leantime
+  #      path: /config
+  #  pull: always
+  #  environment:
+  #    PUID: "1000"
+  #    PGID: "1000"
+  #    LEAN_DB_HOST: "mariadb_leantime"
+  #    LEAN_DB_DATABASE: "leantimedb"
+  #    LEAN_DB_USER: "leantimeuser"
+  #    LEAN_DB_PASSWORD: "leantimepass"
+
+volumes:
+  - name: volume_db
+    temp: {}
+  - name: volume_leantime
+    temp: {}
+
+steps:
+  - name: leantime_test
+    image: fabiodcorreia/leantime:test
+    ports: [ 80 ]
+    detach: true
+    volumes:
+      - name: volume_leantime
+        path: /config
+    pull: always
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      LEAN_DB_HOST: "mariadb_leantime"
+      LEAN_DB_DATABASE: "leantimedb"
+      LEAN_DB_USER: "leantimeuser"
+      LEAN_DB_PASSWORD: "leantimepass"
+
+  - name: test image
+    image: python:2.7.18-alpine
+    commands:
+      - sleep 60
+      - sh ./test/start.sh
+
+depends_on:
+  - build-test-build
+
+---
+kind: pipeline
+type: docker
 name: docker-amd64
 
 platform:
@@ -9,6 +109,11 @@ platform:
 trigger:
   event:
   - tag
+  status:
+  - success
+
+depends_on:
+  - docker-test
 
 steps:
   - name: build and publish amd64
@@ -35,6 +140,11 @@ platform:
 trigger:
   event:
   - tag
+  status:
+  - success
+
+depends_on:
+  - docker-test
 
 steps:
   - name: build and publish arm64v8
@@ -61,6 +171,11 @@ platform:
 trigger:
   event:
   - tag
+  status:
+  - success
+
+depends_on:
+  - docker-test
 
 steps:
   - name: build and publish arm32v7
@@ -77,6 +192,7 @@ steps:
 
 ---
 kind: pipeline
+type: docker
 name: docker-manifest
 
 platform:
@@ -86,6 +202,13 @@ platform:
 trigger:
   event:
   - tag
+  status:
+  - success
+
+depends_on:
+  - docker-amd64
+  - docker-arm64
+  - docker-arm32
 
 steps:
   - name: manifest
@@ -110,8 +233,3 @@ steps:
        from_secret: DOCKERHUB_USERNAME
       password:
         from_secret: DOCKERHUB_PASSWORD
-
-depends_on:
-  - docker-amd64
-  - docker-arm64
-  - docker-arm32
