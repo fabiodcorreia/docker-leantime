@@ -9,8 +9,8 @@ server {
 	index index.php;
 
   location ~.php$ {
-    # 404
     try_files $fastcgi_script_name =404;
+
     include /etc/nginx/fastcgi_params;
 
     fastcgi_pass 127.0.0.1:9000;
@@ -21,7 +21,7 @@ server {
     # fastcgi params
     fastcgi_param DOCUMENT_ROOT $realpath_root;
     fastcgi_param SCRIPT_FILENAME	$realpath_root$fastcgi_script_name;
-    fastcgi_param PHP_ADMIN_VALUE	"open_basedir=$base/:/usr/lib/php/:/tmp/";
+    fastcgi_param PHP_ADMIN_VALUE	"open_basedir=$base/:/usr/lib/php/:/tmp/:/config/www/";
   }
 
   location / {

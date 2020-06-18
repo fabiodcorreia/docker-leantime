@@ -51,7 +51,7 @@ RUN \
     sed -i 's/post_max_size = 8M/post_max_size = 64M/' /etc/php7/php.ini && \
 	  sed -i 's/pm = dynamic/pm = static/' /etc/php7/php-fpm.d/www.conf && \
 	  sed -i 's/pm.max_children = 5/pm.max_children = 1/' /etc/php7/php-fpm.d/www.conf && \
-  echo "error_log /dev/stdout" >> /etc/php7/php.ini && \
+    echo "error_log /dev/stdout" >> /etc/php7/php.ini && \
   echo "**** installation and setup completed ****"
 
 # Copy local files

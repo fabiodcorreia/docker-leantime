@@ -19,6 +19,28 @@ else
   fi
 fi
 
+
+echo "**** set volume links ****"
+
+# create directory structure
+mkdir -p /config/www/userfiles
+mkdir -p /config/www/logs
+mkdir -p $APP_DIR/resources/logs
+mkdir -p $APP_DIR/userfiles
+
+# create symlinks
+symlinks=( \
+    $APP_DIR/resources/logs
+    $APP_DIR/userfiles
+)
+
+for i in "${symlinks[@]}"
+do
+[[ -e "$i" && ! -L "$i" ]] && rm -rf "$i"
+[[ ! -L "$i" ]] && ln -s /config/www/"$(basename "$i")" "$i"
+done
+
+
 echo "**** chown /config and /var/www ****"
 chown -R abc:abc \
 	/config \
