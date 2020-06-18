@@ -109,11 +109,6 @@ platform:
 trigger:
   event:
   - tag
-  status:
-  - success
-
-depends_on:
-  - docker-test
 
 steps:
   - name: build and publish amd64
@@ -140,11 +135,6 @@ platform:
 trigger:
   event:
   - tag
-  status:
-  - success
-
-depends_on:
-  - docker-test
 
 steps:
   - name: build and publish arm64v8
@@ -171,11 +161,6 @@ platform:
 trigger:
   event:
   - tag
-  status:
-  - success
-
-depends_on:
-  - docker-test
 
 steps:
   - name: build and publish arm32v7
