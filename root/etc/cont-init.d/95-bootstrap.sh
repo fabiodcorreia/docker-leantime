@@ -20,9 +20,9 @@ else
 fi
 
 echo "**** database setup ****"
-echo "LEAN_DB_HOST: " + $LEAN_DB_HOST
-echo "LEAN_DB_DATABASE: " + $LEAN_DB_DATABASE
-echo "LEAN_DB_USER: "+ $LEAN_DB_USER
+echo "LEAN_DB_HOST: "  $LEAN_DB_HOST
+echo "LEAN_DB_DATABASE: " $LEAN_DB_DATABASE
+echo "LEAN_DB_USER: " $LEAN_DB_USER
 echo "**** database setup ****"
 
 
