@@ -50,21 +50,6 @@ services:
       MYSQL_USER: "leantimeuser"
       MYSQL_PASSWORD: "leantimepass"
 
-  #- name: leantime_test
-  #  image: fabiodcorreia/leantime:test
-  #  ports: [ 80 ]
-  #  volumes:
-  #    - name: volume_leantime
-  #      path: /config
-  #  pull: always
-  #  environment:
-  #    PUID: "1000"
-  #    PGID: "1000"
-  #    LEAN_DB_HOST: "mariadb_leantime"
-  #    LEAN_DB_DATABASE: "leantimedb"
-  #    LEAN_DB_USER: "leantimeuser"
-  #    LEAN_DB_PASSWORD: "leantimepass"
-
 volumes:
   - name: volume_db
     temp: {}
@@ -109,6 +94,11 @@ platform:
 trigger:
   event:
   - tag
+  status:
+  - success
+
+depends_on:
+  - docker-test
 
 steps:
   - name: build and publish amd64
@@ -135,6 +125,11 @@ platform:
 trigger:
   event:
   - tag
+  status:
+  - success
+
+depends_on:
+  - docker-test
 
 steps:
   - name: build and publish arm64v8
@@ -161,6 +156,11 @@ platform:
 trigger:
   event:
   - tag
+  status:
+  - success
+
+depends_on:
+  - docker-test
 
 steps:
   - name: build and publish arm32v7

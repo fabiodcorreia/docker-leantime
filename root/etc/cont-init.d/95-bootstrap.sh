@@ -1,6 +1,8 @@
 #!/usr/bin/with-contenv bash
 
-echo "**** start 95-bootstrap.sh ****"
+echo "**** disable access log ****"
+sed -i 's/access_log \/dev\/stdout;/#access_log \/dev\/stdout;/g' /config/nginx/nginx.conf;
+sed -i 's/#access_log off;/access_log off;/g' /config/nginx/nginx.conf;
 
 APP_DIR="/var/www/html"
 CONFIG="/var/www/html/config/configuration.php"
@@ -51,5 +53,3 @@ echo "**** chown /config and /var/www ****"
 chown -R abc:abc \
 	/config \
 	/var/www/
-
-echo "**** finish 95-bootstrap.sh ****"

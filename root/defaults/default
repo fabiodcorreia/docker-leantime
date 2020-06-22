@@ -1,7 +1,6 @@
 server {
 
   listen 80 default_server;
-	server_tokens off;
 
   set $base /var/www/html;
   root $base/public;
