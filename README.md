@@ -109,8 +109,13 @@ Also a single port is exposed at 80 to allow external connections to the databas
 docker run \
   -e PUID=1000 \
   -e PGID=1000 \
-  -e MYSQL_ROOT_PASSWORD=password.123 \
-  -p 3306:3306 \
+  -e DATABASE_HOST=mariadb_leantime \
+  -e DATABASE_NAME=leantimedb \
+  -e DATABASE_USER=leantimeuser \
+  -e DATABASE_PASS=leantimepass \
+  -p 80:80 \
   -v $PWD:/config \
   fabiodcorreia/leantime
 ```
+
+Or use `docker-compose`, an example is provided on [docker-compose.yml](docker-compose.yml)
