@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: build-test-build
+name: build-test
 
 platform:
   os: linux
@@ -38,7 +38,7 @@ trigger:
 
 services:
   - name: mariadb_leantime
-    image: linuxserver/mariadb:latest
+    image: fabiodcorreia/mariadb:latest
     container_name: mariadb_leantime
     ports: [ 3306 ]
     volumes:
@@ -68,19 +68,20 @@ steps:
     environment:
       PUID: "1000"
       PGID: "1000"
-      LEAN_DB_HOST: "mariadb_leantime"
-      LEAN_DB_DATABASE: "leantimedb"
-      LEAN_DB_USER: "leantimeuser"
-      LEAN_DB_PASSWORD: "leantimepass"
+      DATABASE_HOST: "mariadb_leantime"
+      DATABASE_NAME: "leantimedb"
+      DATABASE_USER: "leantimeuser"
+      DATABASE_PASS: "leantimepass"
+      HTTP_TRACE: "true"
 
   - name: test image
-    image: python:2.7.18-alpine
+    image: fabiodcorreia/base-python:latest
     commands:
       - sleep 60
       - sh ./test/start.sh
 
 depends_on:
-  - build-test-build
+  - build-test
 
 ---
 kind: pipeline
@@ -104,6 +105,9 @@ steps:
   - name: build and publish amd64
     image: plugins/docker:linux-amd64
     settings:
+      build_args:
+        - BUILD_DATE=${DRONE_BUILD_FINISHED}
+        - VERSION=${DRONE_TAG}
       username:
         from_secret: DOCKERHUB_USERNAME
       password:
@@ -135,6 +139,9 @@ steps:
   - name: build and publish arm64v8
     image: plugins/docker:linux-arm64
     settings:
+      build_args:
+        - BUILD_DATE=${DRONE_BUILD_FINISHED}
+        - VERSION=${DRONE_TAG}
       username:
         from_secret: DOCKERHUB_USERNAME
       password:
@@ -166,6 +173,9 @@ steps:
   - name: build and publish arm32v7
     image: plugins/docker:linux-arm
     settings:
+      build_args:
+        - BUILD_DATE=${DRONE_BUILD_FINISHED}
+        - VERSION=${DRONE_TAG}
       username:
         from_secret: DOCKERHUB_USERNAME
       password:

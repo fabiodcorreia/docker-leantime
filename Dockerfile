@@ -1,14 +1,14 @@
-FROM fabiodcorreia/base-php:1.0.1
+FROM fabiodcorreia/base-php:1.1.0
 
+ARG BUILD_DATE
 ARG VERSION
-ARG LEAN_VERSION
 LABEL build_version="version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="fabiodcorreia"
 
-ENV LEAN_VERSION=2.1.4
-ENV LEANTIME_PATH=/var/www/html
+ENV APP_VERSION=2.1.4
+ENV APP_PATH=/var/www/html
 
-WORKDIR ${LEANTIME_PATH}
+WORKDIR ${APP_PATH}
 
 RUN apk add --no-cache \
   php7-exif \
@@ -36,11 +36,11 @@ RUN apk add --no-cache \
 RUN \
   echo "**** download leantime ****" && \
     curl -LJO \
-      "https://github.com/Leantime/leantime/releases/download/v${LEAN_VERSION}/Leantime-v${LEAN_VERSION}.tar.gz" && \
+      "https://github.com/Leantime/leantime/releases/download/v${APP_VERSION}/Leantime-v${APP_VERSION}.tar.gz" && \
   echo "**** extrat leantime ****" && \
-    tar -zxvf "Leantime-v${LEAN_VERSION}.tar.gz" --strip-components 1 && \
+    tar -zxvf "Leantime-v${APP_VERSION}.tar.gz" --strip-components 1 && \
   echo "**** clean leantime package ****" && \
-    rm "Leantime-v${LEAN_VERSION}.tar.gz" && \
+    rm "Leantime-v${APP_VERSION}.tar.gz" && \
   echo "**** configure php-fpm and php ****" && \
 	  sed -i 's/max_execution_time = 30/max_execution_time = 600/' /etc/php7/php.ini && \
     sed -i 's/memory_limit = 128M/memory_limit = 256M/' /etc/php7/php.ini && \

@@ -1,5 +1,4 @@
 import sys
-import os
 import mechanize
 
 APP_TEST_PORT = "80"
@@ -8,7 +7,7 @@ assert len(sys.argv) > 1, "no arguments"
 
 APP_TEST_URL = sys.argv[1]
 
-print "TEST_ULR=" + APP_TEST_URL
+print("TEST_URL=" + APP_TEST_URL)
 
 def setFormInput(form, input, val):
   form.find_control(input).value = val
@@ -65,4 +64,4 @@ br.form = forms[1]
 br.form.find_control("twoFACode")
 
 
-
+print("Test completed with success")

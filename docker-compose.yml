@@ -22,10 +22,10 @@ services:
       - TZ=Europe/Lisbon
       - PUID=1000
       - PGID=1000
-      - LEAN_DB_HOST=mariadb_leantime
-      - LEAN_DB_DATABASE=leantimedb
-      - LEAN_DB_USER=leantimeuser
-      - LEAN_DB_PASSWORD=leantimepass
+      - DATABASE_HOST=mariadb_leantime
+      - DATABASE_NAME=leantimedb
+      - DATABASE_USER=leantimeuser
+      - DATABASE_PASS=leantimepass
     volumes:
       - leantime_config:/config
     ports:
